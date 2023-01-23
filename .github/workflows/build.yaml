@@ -13,10 +13,10 @@ jobs:
     strategy:
       matrix:
         java_version:
-          - { major: 19, version: 19.0.1, jrevision: '+11', latest: true, revision: 1 }
-          - { major: 18, version: 18.0.2, jrevision: '+10', latest: false, revision: 1 }
-          - { major: 17, version: 17.0.5, jrevision: '+8', latest: false, revision: 1 }
-          - { major: 11, version: 11.0.17, jrevision: '+7', latest: false, revision: 1 }
+          - { major: 19, version: 19.0.2, jrevision: '+9', latest: true, revision: 1 }
+          - { major: 18, version: 18.0.2, jrevision: '+10', latest: false, revision: 2 }
+          - { major: 17, version: 17.0.6, jrevision: '+10', latest: false, revision: 1 }
+          - { major: 11, version: 11.0.18, jrevision: '+10', latest: false, revision: 1 }
 
     permissions:
       contents: read
