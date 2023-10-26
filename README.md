@@ -60,7 +60,7 @@ In case you are replacing the default [minideb](https://github.com/bitnami/minid
 - In the Dockerfile, replace `FROM docker.io/bitnami/minideb:latest` to use a custom image, defined with the `MYJAVAFORK:TAG` placeholder:
 
 ```diff
-- FROM bitnami/minideb:latest
+- FROM docker.io/bitnami/minideb:latest
 + FROM MYFORK:TAG
 ```
 

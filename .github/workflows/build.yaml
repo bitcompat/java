@@ -13,10 +13,11 @@ jobs:
     strategy:
       matrix:
         java_version:
-          - { major: 19, version: 19.0.2, jrevision: '+9', latest: true, revision: 1 }
-          - { major: 18, version: 18.0.2, jrevision: '+10', latest: false, revision: 2 }
-          - { major: 17, version: 17.0.6, jrevision: '+10', latest: false, revision: 1 }
-          - { major: 11, version: 11.0.18, jrevision: '+10', latest: false, revision: 1 }
+          - { major: 21, version: 21.0.1, jrevision: '+12', latest: true, revision: 1 }
+          - { major: 19, version: 19.0.2, jrevision: '+9', latest: false, revision: 1 }
+          - { major: 18, version: 18.0.2.1, jrevision: '+1', latest: false, revision: 1 }
+          - { major: 17, version: 17.0.9, jrevision: '+11', latest: false, revision: 1 }
+          - { major: 11, version: 11.0.21, jrevision: '+10', latest: false, revision: 1 }
 
     permissions:
       contents: read
@@ -37,7 +38,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
         with:
           driver-opts: |
-            image=moby/buildkit:v0.10.6
+            image=moby/buildkit:v0.12.3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -67,8 +68,8 @@ jobs:
             public.ecr.aws/bitcompat/${{ github.event.repository.name }}
           tags: |
             ${{ matrix.java_version.latest && 'latest' || '' }}
-            ${{ matrix.java_version.version }}${{ matrix.java_version.jrevision }}-bullseye-r${{ matrix.java_version.revision }}
-            ${{ matrix.java_version.version }}${{ matrix.java_version.jrevision }}-bullseye
+            ${{ matrix.java_version.version }}${{ matrix.java_version.jrevision }}-bookworm-r${{ matrix.java_version.revision }}
+            ${{ matrix.java_version.version }}${{ matrix.java_version.jrevision }}-bookworm
             ${{ matrix.java_version.version }}${{ matrix.java_version.jrevision }}
             ${{ matrix.java_version.version }}
             ${{ matrix.java_version.major }}
@@ -91,7 +92,7 @@ jobs:
 
       - name: Sign image with a key
         run: |
-          cosign sign --key env://COSIGN_PRIVATE_KEY ${TAGS}
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${TAGS}
         env:
           TAGS: ${{ steps.docker_meta.outputs.tags }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
