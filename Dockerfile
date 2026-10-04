@@ -3,19 +3,19 @@
 ARG JAVA_VERSION="21.0.1"
 ARG PACKAGE_VERSION="${JAVA_VERSION}+12"
 
-FROM docker.io/bitnami/minideb:bookworm as builder
+FROM docker.io/bitnami/minideb:trixie as builder
 
 ARG JAVA_VERSION
 ARG PACKAGE_VERSION
 
-LABEL org.opencontainers.image.ref.name="${JAVA_VERSION}-debian-12-r1" \
+LABEL org.opencontainers.image.ref.name="${JAVA_VERSION}-trixie" \
       org.opencontainers.image.title="java" \
       org.opencontainers.image.version="${JAVA_VERSION}"
 
 COPY prebuildfs /
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-COPY --link --from=ghcr.io/bitcompat/gosu:1.16.0 /opt/bitnami/ /opt/bitnami/
+COPY --link --from=ghcr.io/bitcompat/gosu:1.18.0-trixie /opt/bitnami/ /opt/bitnami/
 RUN install_packages acl ca-certificates curl gzip libc6 libsqlite3-dev libssl-dev locales procps tar wget zlib1g curl unzip zip
 
 RUN <<EOT bash
@@ -45,7 +45,13 @@ EOT
 
 COPY --link rootfs /
 
-FROM docker.io/bitnami/minideb:bookworm as stage-0
+FROM docker.io/bitnami/minideb:trixie as stage-0
+
+ARG JAVA_VERSION
+ARG PACKAGE_VERSION
+LABEL org.opencontainers.image.ref.name="${JAVA_VERSION}-trixie" \
+      org.opencontainers.image.title="java" \
+      org.opencontainers.image.version="${JAVA_VERSION}"
 
 COPY --link --from=builder /opt/bitnami /opt/bitnami
 ARG JAVA_EXTRA_SECURITY_DIR="/bitnami/java/extra-security"
@@ -70,9 +76,9 @@ EOT
 ARG TARGETARCH
 ENV HOME="/" \
     OS_ARCH="${TARGETARCH}" \
-    OS_FLAVOUR="debian-11" \
+    OS_FLAVOUR="debian-13" \
     OS_NAME="linux" \
-    APP_VERSION="${JAVA_VERSION}-1" \
+    APP_VERSION="${JAVA_VERSION}" \
     BITNAMI_APP_NAME="java" \
     JAVA_HOME="/opt/bitnami/java" \
     LANG="en_US.UTF-8" \
